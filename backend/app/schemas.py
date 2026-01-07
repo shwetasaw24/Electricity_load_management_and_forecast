@@ -1,20 +1,11 @@
-# app/schemas.py
-
 from pydantic import BaseModel
+from typing import List
 
-class ForecastInput(BaseModel):
-    hour: float
-    dayofweek: float
-    month: float
-    lag_1: float
-    lag_24: float
-    lag_168: float
-    roll_24: float
-    temp: float
+class AdvisoryRequest(BaseModel):
+    city: str
+    # last_24_loads: List[float]
 
-class ForecastOutput(BaseModel):
-    predicted_load: float
-
-class AdvisoryOutput(BaseModel):
+class AdvisoryResponse(BaseModel):
     predicted_load: float
     risk: str
+    reason: str
