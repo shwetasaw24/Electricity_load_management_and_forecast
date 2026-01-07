@@ -1,11 +1,15 @@
 from pydantic import BaseModel
-from typing import List
 
-class AdvisoryRequest(BaseModel):
+class AdminAdvisoryRequest(BaseModel):
     city: str
-    # last_24_loads: List[float]
+    region: str
+    building_type: str
+    purpose: str
+    current_load: float | None = None
 
-class AdvisoryResponse(BaseModel):
-    predicted_load: float
+class AdminAdvisoryResponse(BaseModel):
+    predicted_national_load: float
+    safe_capacity: float
+    region_recommended_release: float
     risk: str
     reason: str

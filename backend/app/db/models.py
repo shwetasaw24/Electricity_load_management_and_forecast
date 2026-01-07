@@ -32,7 +32,9 @@ class LoadHistory(Base):
 
 class Region(Base):
     __tablename__ = "regions"
-
     id = Column(Integer, primary_key=True)
-    city = Column(String, unique=True)
-    region_type = Column(String)  # Residential / Commercial / Industrial
+    city = Column(String)
+    region_name = Column(String)
+    building_type = Column(String)  # residential, commercial, industrial
+    purpose = Column(String)        # hospital, home, factory, school
+    priority = Column(Integer)      # 1–5 (criticality)

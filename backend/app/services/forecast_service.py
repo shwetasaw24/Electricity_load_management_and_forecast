@@ -1,15 +1,14 @@
-from app.db.database import SessionLocal
-from app.db.models import LoadHistory
+import numpy as np
+import joblib
+from tensorflow.keras.models import load_model
 
-def get_last_24_loads(city):
-    db = SessionLocal()
-    rows = (
-        db.query(LoadHistory)
-        .filter(LoadHistory.city == city)
-        .order_by(LoadHistory.timestamp.desc())
-        .limit(24)
-        .all()
-    )
-    db.close()
+model = load_model("models/india_load_lstm_model.keras")
+scaler = joblib.load("models/load_scaler.pkl")
 
-    return [r.load for r in reversed(rows)]
+def predict_national_load(last_24_loads):
+    arr = np.array(last_24_loads).reshape(-1, 1)
+    scaled = scaler.transform(arr)
+    X = scaled.reshape(1, 24, 1)
+    pred_scaled = model.predict(X)
+    pred = scaler.inverse_transform(pred_scaled)
+    return float(pred[0][0])
