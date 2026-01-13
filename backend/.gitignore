@@ -1,3 +1,7 @@
-_pycache
+__pycache__/
+*.pyc
 models
 .env
+venv/
+.check_db.py
+energy.db

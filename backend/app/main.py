@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 import traceback
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.controllers.admin_controller import router as admin_router
 from app.controllers.weather_controller import router as weather_router
@@ -10,6 +11,15 @@ from app.db.database import engine
 from app.db.models import Base
 
 app = FastAPI(title="Energy Intelligence Platform")
+
+# Enable CORS for local frontend dev
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://localhost:3000", "http://127.0.0.1:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # --- Global exception handler ---
 @app.middleware("http")

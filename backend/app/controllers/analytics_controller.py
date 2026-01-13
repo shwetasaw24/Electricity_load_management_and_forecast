@@ -9,5 +9,4 @@ def national_load():
 
 @router.get("/analytics/regional-load/{city}")
 def regional_load(city: str):
-    print("Fetching data for city:", city)
     return get_regional_load_series(city)

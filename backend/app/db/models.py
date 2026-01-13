@@ -29,7 +29,7 @@ class LoadHistory(Base):
     city = Column(String, index=True)
     timestamp = Column(DateTime, default=datetime.utcnow, index=True)
     load = Column(Float)
-    
+
 class Region(Base):
     __tablename__ = "regions"
     id = Column(Integer, primary_key=True)
