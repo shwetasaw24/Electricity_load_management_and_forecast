@@ -15,16 +15,32 @@ export default function Overview() {
     const fetchOverviewData = async () => {
       try {
         setLoading(true);
-        const [loadRes, forecastRes, riskRes, weatherRes] = await Promise.all([
+        const results = await Promise.allSettled([
           api.get("/analytics/national-load"),
           api.get("/analytics/forecast-peak"),
           api.get("/admin/current-risk-level"),
           api.get("/analytics/weather-impact")
         ]);
-        setData(loadRes.data);
-        setForecastPeak(forecastRes.data);
-        setRiskLevel(riskRes.data.level);
-        setWeatherImpact(weatherRes.data);
+
+        const [loadRes, forecastRes, riskRes, weatherRes] = results;
+
+        if (loadRes.status === "fulfilled") setData(loadRes.value.data);
+        else setData([]);
+
+        if (forecastRes.status === "fulfilled") setForecastPeak(forecastRes.value.data);
+        else setForecastPeak(null);
+
+        if (riskRes.status === "fulfilled") setRiskLevel(riskRes.value.data.level || "Normal");
+        else setRiskLevel("Normal");
+
+        if (weatherRes.status === "fulfilled") setWeatherImpact(weatherRes.value.data);
+        else setWeatherImpact(null);
+
+        // If any of the requests failed, capture a concise error
+        const rejected = results.filter(r => r.status === "rejected");
+        if (rejected.length > 0) {
+          setError(`${rejected.length} request(s) failed`);
+        }
       } catch (e) {
         setError(e.toString());
       } finally {
@@ -57,7 +73,7 @@ export default function Overview() {
           <div style={{ color: 'red' }}>Error: {error}</div>
         ) : (
           <>
-            <div style={{ display: "flex", gap: 16, marginBottom: 16, flexWrap: "wrap" }}>
+            <div style={{ display: "flex", gap: 16, marginBottom: 16, flexWrap: "wrap", alignItems: 'stretch' }}>
               <KPICard title="Current Load" value={`${current} MW`} />
               <KPICard title="Peak Load" value={`${peak} MW`} />
               <KPICard title="Forecasted Peak (Next 24h)" value={forecastPeak ? `${forecastPeak.load} MW` : "N/A"} />

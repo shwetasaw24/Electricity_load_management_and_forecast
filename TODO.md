@@ -8,3 +8,5 @@
 - [x] Update AdminAdvisoryResponse schema in schemas.py to include recommendations, alert_level, and enhanced_reason
 - [x] Modify admin_controller.py to compute and include new fields in advisory response
 - [x] Test the updated advisory endpoint
+- [x] Remove role-based authentication from admin advisory endpoint
+- [x] Update frontend fallback logic to only trigger on timeout, not auth errors

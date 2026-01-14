@@ -33,7 +33,7 @@ export default function Regions() {
     }
   };
 
-  const regions = ["mumbai", "delhi", "bangalore", "chennai", "kolkata"];
+  const regions = ["mumbai", "pune", "nagpur", "nashik", "thane", "kolhapur", "aurangabad", "delhi", "bangalore", "chennai", "kolkata"];
 
   return (
     <>
@@ -67,7 +67,7 @@ export default function Regions() {
             {breakdown && (
               <div style={{ marginBottom: 16 }}>
                 <h4>Load Breakdown</h4>
-                <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+                <div style={{ display: "flex", gap: 16, flexWrap: "wrap", alignItems: 'stretch' }}>
                   <KPICard title="Industrial Load" value={`${breakdown.industrial}%`} />
                   <KPICard title="Residential Load" value={`${breakdown.residential}%`} />
                   <KPICard title="Commercial Load" value={`${breakdown.commercial}%`} />

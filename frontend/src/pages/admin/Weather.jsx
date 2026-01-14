@@ -47,7 +47,7 @@ export default function Weather() {
             {weather && (
               <div style={{ marginBottom: 16 }}>
                 <h4>Current Weather</h4>
-                <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+                <div style={{ display: "flex", gap: 16, flexWrap: "wrap", alignItems: 'stretch' }}>
                   <KPICard title="Temperature" value={`${weather.temperature}°C`} />
                   <KPICard title="Humidity" value={`${weather.humidity}%`} />
                   <KPICard title="Condition" value={weather.condition} />

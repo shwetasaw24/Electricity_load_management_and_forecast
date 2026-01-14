@@ -22,13 +22,26 @@ export default function AdvisoryForm() {
     try {
       setLoading(true);
       setError(null);
-      const r = await api.post("/admin/advisory", {
-        ...form,
-        current_load: Number(form.current_load)
-      });
-      setResult(r.data);
+      // Try admin advisory first (admin UI). If auth not provided or timeout, fallback to public advisory API
+      const payload = { ...form, current_load: Number(form.current_load) };
+      const timeout = (ms) => new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), ms));
+
+      try {
+        const r = await Promise.race([api.post("/admin/advisory", payload), timeout(5000)]);
+        setResult(r.data);
+      } catch (e) {
+        if (e.message === 'Timeout') {
+          // fallback: create last_24_loads seed if current_load provided
+          const last24 = payload.current_load ? Array(24).fill(payload.current_load) : Array(24).fill(8000);
+          const fallback = await api.post("/advisory", { city: payload.city || 'mumbai', last_24_loads: last24 });
+          setResult(fallback.data);
+          setError('Timeout; used public advisory fallback result.');
+        } else {
+          throw e;
+        }
+      }
     } catch (e) {
-      setError(e.toString());
+      setError(e?.response?.data?.detail || e.toString());
     } finally {
       setLoading(false);
     }
