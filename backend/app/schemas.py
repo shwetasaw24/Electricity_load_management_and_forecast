@@ -13,3 +13,17 @@ class AdminAdvisoryResponse(BaseModel):
     region_recommended_release: float
     risk: str
     reason: str
+    recommendations: list[str]
+    alert_level: str
+    enhanced_reason: str
+
+# Advisory endpoints used by the user-facing advisory form
+class AdvisoryRequest(BaseModel):
+    city: str
+    last_24_loads: list[float]
+
+class AdvisoryResponse(BaseModel):
+    predicted_load: float
+    risk: str
+    reason: str
+

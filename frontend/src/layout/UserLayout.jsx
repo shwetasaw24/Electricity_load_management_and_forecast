@@ -1,14 +1,7 @@
-import { Link, Outlet } from "react-router-dom";
-import { useState } from "react";
-import AlertsPanel from "../pages/admin/AlertPanel";
-
-import { useNavigate } from "react-router-dom";
-// import { useState } from "react";
-// import AlertsPanel from "../pages/admin/AlertPanel";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/authContext";
 
-export default function AdminLayout() {
-  const [showAlerts, setShowAlerts] = useState(false);
+export default function UserLayout() {
   const { logout } = useAuth();
   const navigate = useNavigate();
 
@@ -20,18 +13,15 @@ export default function AdminLayout() {
   return (
     <div style={{ display: "flex", minHeight: "100vh" }}>
       <nav style={navStyle}>
-        <h3>⚡ Energy Admin</h3>
-        <NavLink to="/admin">Dashboard</NavLink>
-        <NavLink to="/admin/advisory">Advisory</NavLink>
-        <button onClick={() => setShowAlerts(true)} style={alertBtn}>Alerts</button>
+        <h3>⚡ Energy User</h3>
+        <NavLink to="/user">Dashboard</NavLink>
+        {/* Add more user routes here */}
         <button onClick={doLogout} style={logoutBtn}>Logout</button>
       </nav>
 
       <main style={{ flex: 1, padding: 24, background: "#f5f7fb" }}>
         <Outlet />
       </main>
-
-      {showAlerts && <AlertsPanel onClose={() => setShowAlerts(false)} />}
     </div>
   );
 }
@@ -59,14 +49,4 @@ const navStyle = {
   padding: 20,
   background: "#111",
   color: "#fff"
-};
-
-const alertBtn = {
-  marginTop: 20,
-  padding: "8px 12px",
-  background: "#e11d48",
-  color: "#fff",
-  border: "none",
-  borderRadius: 6,
-  cursor: "pointer"
 };

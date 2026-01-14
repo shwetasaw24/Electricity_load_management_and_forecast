@@ -106,9 +106,15 @@ Note: The frontend expects the backend at `http://localhost:8000` by default (se
   - Endpoint: `GET /forecast/next-24h` returns a simple 24-hour forecast (currently simplistically seeded).
 
 - Advisory & Allocation
-  - `POST /admin/advisory` computes predicted national load using recent history or provided current load and uses `allocation_service` to compute recommended release and risk.
+  - `POST /admin/advisory` (admin-only) computes predicted national load using recent history or provided current load and uses `allocation_service` to compute recommended release and risk.
   - `POST /advisory` generates an advisory per-city using city history or provided last 24 loads.
   - Allocation factors include building type, purpose, and weather adjustments.
+
+- Authentication (basic dev flow)
+- `POST /auth/register` — register a user (dev: password stored in plain text; optional `role` field supported). To create an admin, POST `{ "email":"...","password":"...","role":"admin"` }.
+  - `POST /auth/login` — obtain a JWT bearer token (24h expiry).
+  - `GET /auth/me` — returns current user information decoded from token (email, role).
+  - Admin-only endpoints (`/admin/*`) are protected and require the token to have `role: "admin"`. (This is simple role-based routing for UI flows.)
 
 - Analytics & History
   - `GET /analytics/national-load` returns the national load time series stored in DB.
