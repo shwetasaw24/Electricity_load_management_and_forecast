@@ -17,9 +17,13 @@ export default function Forecast() {
 
   return (
     <>
-      <h2>Forecast</h2>
-      {error && <div style={{ color: "#b00020" }}>Error: {error}</div>}
-      {loading ? <div>Loading...</div> : <LineChart data={data} />}
+      <section className="card">
+      <h2>Demand Forecast</h2>
+      <p style={{ color: "#555" }}>
+        Forecasted electricity demand based on historical patterns and ML predictions.
+      </p>
+      {loading ? "Loading..." : <LineChart data={data} />}
+    </section>
     </>
   );
 }

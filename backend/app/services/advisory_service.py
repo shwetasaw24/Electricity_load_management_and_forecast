@@ -22,5 +22,7 @@ def generate_advisory(city, last_24_loads=None):
     predicted = predict_national_load(last_24_loads)
     weather = get_weather(city)
     risk = compute_risk(predicted)
+    if risk == "HIGH":
+        create_alert("Critical", f"High risk in {city} due to {weather}", city)
     reason = f"Weather: {weather.get('condition')}, Temp: {weather.get('temp')}°C"
     return {"predicted_load": predicted, "risk": risk, "reason": reason}

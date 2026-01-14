@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { api } from "../../api/api";
+import KPICard from "../components/KPICard";
+// import KPICard from "../components/KPICard";
 
 export default function Risk() {
   const [res, setRes] = useState(null);
@@ -19,7 +21,7 @@ export default function Risk() {
       });
       setRes(r.data);
     } catch (e) {
-      setError(e.toString());
+      setError(e?.response?.data?.detail || e.toString());
     } finally {
       setLoading(false);
     }
@@ -27,19 +29,27 @@ export default function Risk() {
 
   return (
     <>
+      <section className="card">
       <h2>Risk Advisory</h2>
-      <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-        <button onClick={fetchRisk} disabled={loading}>{loading ? "Generating…" : "Generate Advisory"}</button>
-        {error && <div style={{ color: "#b00020" }}>{error}</div>}
-      </div>
+      <p style={{ color: "#555" }}>
+        Evaluate system risk based on current load, weather and region type.
+      </p>
+
+      <button onClick={fetchRisk} disabled={loading}>
+        {loading ? "Analyzing…" : "Generate Advisory"}
+      </button>
+
+      {error && <div style={{ color: 'red', marginTop: 8 }}>Error: {error}</div>}
 
       {res && (
-        <div style={{ marginTop: 16, background: "#fcfcff", padding: 16, borderRadius: 8 }}>
-          <div><strong>Predicted Load:</strong> {res.predicted_load}</div>
-          <div><strong>Risk:</strong> {res.risk}</div>
-          <div><strong>Reason:</strong> {res.reason}</div>
+        <div style={{ marginTop: 16 }}>
+          <KPICard title="Predicted Load" value={`${res.predicted_national_load ?? res.predicted_load ?? 'N/A'} MW`} />
+          <KPICard title="Recommended Release" value={`${res.region_recommended_release ?? 'N/A'} MW`} />
+          <KPICard title="Risk Level" value={res.risk} />
+          <p style={{ marginTop: 8 }}>{res.reason}</p>
         </div>
       )}
+    </section>
     </>
   );
 }

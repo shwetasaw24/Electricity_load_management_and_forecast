@@ -17,10 +17,13 @@ export default function Regions() {
 
   return (
     <>
-      <h2>Region Analysis</h2>
-      {error && <div style={{ color: "#b00020" }}>Error: {error}</div>}
-      {loading ? <div>Loading...</div> : <BarChart data={data} />}
-      {!loading && data.length === 0 && <div>No regional data found. Seed backend DB.</div>}
+      <section className="card">
+      <h2>Regional Consumption</h2>
+      <p style={{ color: "#555" }}>
+        Distribution of electricity demand across regions.
+      </p>
+      {loading ? "Loading..." : <BarChart data={data} />}
+    </section>
     </>
   );
 }

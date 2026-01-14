@@ -38,3 +38,22 @@ class Region(Base):
     building_type = Column(String)  # residential, commercial, industrial
     purpose = Column(String)        # hospital, home, factory, school
     priority = Column(Integer)      # 1–5 (criticality)
+
+
+class Alert(Base):
+    __tablename__ = "alerts"
+
+    id = Column(Integer, primary_key=True)
+    level = Column(String)
+    message = Column(String)
+    city = Column(String)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+
+class User(Base):
+    __tablename__ = "users"
+    id = Column(Integer, primary_key=True)
+    email = Column(String, unique=True)
+    password_hash = Column(String)
+    role = Column(String)  # "admin" or "user"
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
