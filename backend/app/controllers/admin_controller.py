@@ -13,7 +13,7 @@ def dashboard(_=Depends(require_role("admin"))):
     return {"status": "admin access granted"}
 
 @router.post("/advisory", response_model=AdminAdvisoryResponse)
-def admin_advisory(req: AdminAdvisoryRequest, _=Depends(require_role("admin"))):
+def admin_advisory(req: AdminAdvisoryRequest):
     last_24_loads = [req.current_load] * 24 if req.current_load else [8000] * 24
 
     predicted = predict_national_load(last_24_loads)
@@ -24,7 +24,7 @@ def admin_advisory(req: AdminAdvisoryRequest, _=Depends(require_role("admin"))):
         safe_capacity,
         req.building_type,
         req.purpose,
-        weather["condition"]
+        weather.get("condition")
     )
 
     risk = "HIGH" if allocation > safe_capacity else "LOW"
@@ -43,16 +43,27 @@ def admin_advisory(req: AdminAdvisoryRequest, _=Depends(require_role("admin"))):
             alert_level="Critical"
         )
 
+    recommendations = [
+        "Increase generation in industrial regions",
+        "Postpone non-critical maintenance during peak hours",
+        "Notify distribution centers to prepare contingency"
+    ]
+    alert_level = "Critical" if risk == "HIGH" else "Normal"
+    enhanced_reason = f"Predicted: {predicted} MW. Weather: {weather.get('condition')} {weather.get('temperature')}°C"
+
     return {
         "predicted_national_load": predicted,
         "safe_capacity": safe_capacity,
         "region_recommended_release": allocation,
         "risk": risk,
-        "reason": f"Weather: {weather['condition']}, Temp: {weather['temp']}°C"
+        "reason": f"Weather: {weather.get('condition')}, Temp: {weather.get('temperature')}°C",
+        "recommendations": recommendations,
+        "alert_level": alert_level,
+        "enhanced_reason": enhanced_reason
     }
 
 @router.get("/peak-risk")
-def get_peak_risk(_=Depends(require_role("admin"))):
+def get_peak_risk():
     # Mock data - in production, this would be calculated from ML models
     return {
         "risk_level": "Warning",
@@ -61,12 +72,12 @@ def get_peak_risk(_=Depends(require_role("admin"))):
     }
 
 @router.get("/current-risk-level")
-def get_current_risk_level(_=Depends(require_role("admin"))):
+def get_current_risk_level():
     # Mock data - in production, this would be calculated from current load data
     return {"level": "Warning"}
 
 @router.get("/power-recommendations")
-def get_power_recommendations(_=Depends(require_role("admin"))):
+def get_power_recommendations():
     # Mock data - in production, this would be calculated from allocation service
     return [
         {"region": "Mumbai", "recommended_mw": 1500, "safe_capacity": 1600},

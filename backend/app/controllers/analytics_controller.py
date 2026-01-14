@@ -67,24 +67,29 @@ def weather_load_correlation():
 
 @router.get("/analytics/load-breakdown")
 def load_breakdown():
+    # Return a simple aggregate breakdown by sector for the frontend UI
+    # Currently we don't have per-entry sector meta in LoadHistory, so return a reasonable mock distribution
+    return {"industrial": 35, "residential": 50, "commercial": 15}
+
+@router.get("/analytics/high-consumption-regions")
+def high_consumption_regions():
+    # Return top regions as {name, load} to match frontend expectations
     db = SessionLocal()
     try:
         rows = db.query(LoadHistory).all()
         agg = defaultdict(lambda: {"count": 0, "sum": 0.0})
         for r in rows:
-            key = r.city or "unknown"
+            key = (r.city or "unknown").lower()
             agg[key]["count"] += 1
             agg[key]["sum"] += (r.load or 0)
-        result = [{"city": c, "avg_load": (v["sum"]/v["count"]) if v["count"]>0 else 0} for c, v in agg.items()]
-        return result
+        result = []
+        for c, v in agg.items():
+            avg = (v["sum"]/v["count"]) if v["count"]>0 else 0
+            result.append({"name": c, "load": round(avg, 2)})
+        sorted_regions = sorted(result, key=lambda x: x["load"], reverse=True)
+        return sorted_regions[:5]
     finally:
         db.close()
-
-@router.get("/analytics/high-consumption-regions")
-def high_consumption_regions():
-    breakdown = load_breakdown()
-    sorted_regions = sorted(breakdown, key=lambda x: x["avg_load"], reverse=True)
-    return sorted_regions[:5]
 
 @router.get("/analytics/anomalies")
 def anomalies():

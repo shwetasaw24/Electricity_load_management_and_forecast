@@ -1,7 +1,11 @@
 from app.services.forecast_service import predict_national_load
 from app.services.weather_service import get_weather
-from app.advisory import compute_risk
 from app.services.analytics_service import get_regional_load_series
+from app.services.alert_service import create_alert
+
+def compute_risk(predicted):
+    # Simple risk computation: HIGH if predicted load > 9000 MW
+    return "HIGH" if predicted > 9000 else "LOW"
 
 def generate_advisory(city, last_24_loads=None):
     """Generate advisory for `city`.
@@ -24,5 +28,5 @@ def generate_advisory(city, last_24_loads=None):
     risk = compute_risk(predicted)
     if risk == "HIGH":
         create_alert("Critical", f"High risk in {city} due to {weather}", city)
-    reason = f"Weather: {weather.get('condition')}, Temp: {weather.get('temp')}°C"
+    reason = f"Weather: {weather.get('condition')}, Temp: {weather.get('temperature')}°C"
     return {"predicted_load": predicted, "risk": risk, "reason": reason}

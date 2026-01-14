@@ -17,7 +17,7 @@ def weather_forecast(city: str):
     for i in range(24):
         t = (now + timedelta(hours=i)).isoformat()
         # small random-like, deterministic variation using hour index
-        temp = round(current.get("temp", 30) + ((i % 6) - 3) * 0.5, 1)
+        temp = round(current.get("temperature", 30) + ((i % 6) - 3) * 0.5, 1)
         condition = current.get("condition", "Clear")
         fc.append({"time": t, "temp": temp, "condition": condition})
     return fc
